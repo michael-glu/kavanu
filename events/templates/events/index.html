@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'events/style.css' %}">
+
+<style type="text/css">
+
+	@media (max-width: 768px) { 
+		.right-column{
+			margin-left: 0px;
+		}
+	}
+
+	@media (min-width: 768px) { 
+		.right-column{
+			margin-left: 20px;
+		}
+	}
+
+	.event-container{
+		margin-bottom: 20px;
+		width: 100%;
+	}
+	.create-event-bar{
+		background-color: #fff;
+		margin-bottom:20px;
+	}
+
+	.left-column{
+		padding:0px;
+	}
+
+	.right-column{
+		padding:0px;
+	}
+	
+	.lead{
+		font-size: 17px;
+	}
+</style>
+
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+  <h1 class="display-4">Find your event</h1>
+  <p class="lead">Look for an event nearby you or create an event with your friends!</p>
+</div>
+
+
+<div class="container">
+	<div class="row">
+	
+		<!-- Event Feed -->
+		<div class="left-column col-lg-7 offset-lg-1">
+		
+			<!-- Top 'create event' bar-->
+			<div class="d-lg-none mb-3">
+				<div class="card m-auto d-flex flex-column p-3">
+					<img class="img-fluid d-block m-auto pb-2" src="{% static 'logo.jpg' %}" width="72" height="72">
+					<p class="lead">Enter text here.</p>
+					<p class="m-auto"><a class="btn btn-primary" href="{% url 'events:create' %}">Create new event</a></p>
+				</div>
+			</div>
+			
+			<!--End Top 'create event' bar -->
+			
+			<!-- Event List -->
+			{% if upcoming_event_list %}
+				{% for event in upcoming_event_list %}
+					<div class="event-container">
+						{% include 'events/snippets/event_snippet.html' with event=event %}
+					</div>
+				{% endfor %}
+			{% else %}
+				<div class="event-container">
+					{% include 'events/snippets/event_snippet.html' with query=query %}
+				</div>
+			{% endif %}
+			<!-- End Event List -->
+		
+			<!-- Pagination -->
+			{% include 'events/snippets/event_pagination.html' with events=events %}		
+		</div>
+		<!-- End Event Feed -->
+			
+		<!-- Right 'create event' column-->
+		<div class="right-column col-lg-3 d-lg-flex d-none flex-column">
+			<div class="card create-event-bar d-flex flex-column p-3">
+				<img class="img-fluid d-block m-auto pb-2" src="{% static 'logo.jpg' %}" width="72" height="72">
+				<p class="lead">Enter text here</p>
+				<p class="m-auto"><a class="btn btn-primary" href="{% url 'events:create' %}">Create event</a></p>
+			</div>
+		</div>
+		<!--End Right 'create event' column -->
+		
+	</div>
+</div>
+
+{% endblock content %}

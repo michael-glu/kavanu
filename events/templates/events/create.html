@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style type="text/css">
+  .create-form {
+	    width: 100%;
+	    max-width: 100%;
+	    padding: 15px;
+	    margin: auto;
+  	}
+
+  	.submit-button{
+  		max-width: 200px;
+  	}
+</style>
+
+<div class="container">
+	<div class="row">
+		<div class="col-lg-7 offset-lg-1">
+			<form class="create-form" method="post" enctype="multipart/form-data">{% csrf_token %}
+
+				<!-- Title -->
+				<div class="form-group">
+					<label for="title">Title</label>
+					<input class="form-control" type="text" name="title" id="title" placeholder="Title" required autofocus>
+				</div>
+				
+				<!-- Datetime -->
+				<div class="form-group">
+					<label for="datetime">Date and time</label>
+					<input class="form-control" type="datetime-local" name="datetime" id="datetime" required autofocus>
+				</div>
+				<!-- must make only future -->
+				
+				<!-- Location -->
+				<div class="form-group">
+					<label for="location">Location</label>
+					<input class="form-control" type="text" name="location" id="location" placeholder="Location" required autofocus>
+				</div>
+
+				<!-- Description -->
+				<div class="form-group">
+					<label for="description">Desctiption</label>
+					<textarea class="form-control" rows="5" type="text" name="description" id="description" placeholder="Add a description about your event"></textarea>
+				</div>
+
+				<!-- Image -->
+				<div class="form-group">
+					<label for="image">Image</label>
+					<input  type="file" name="image" id="image" accept="image/*" required>
+				</div>
+				
+				<!-- Min_attendees -->
+				<div class="form-group">
+					<label for="min_attendees">Minimum number of attendees</label>
+					<input class="form-control" type="number" name="min_attendees" id="min_attendees" min="1" oninput="changeMaxAttendeesMinVal()" required autofocus>
+				</div>
+				
+				<!-- Max_attendees -->
+				<div class="form-group">
+					<label for="max_attendees">Maximum number of attendees</label>
+					<input class="form-control" type="number" name="max_attendees" id="max_attendees" min="1" required autofocus>
+				</div>
+
+				<!-- Is Host Attending -->
+				<div class="form-group">
+					<label for="host_attend">Attend?</label>
+					<input class="form-control" type="checkbox" name="host_attend" id="host_attend" autofocus>
+				</div>
+
+				<!-- Submit btn -->
+				<button class="submit-button btn btn-lg btn-primary btn-block" type="submit">Create Event</button>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script>
+	function changeMaxAttendeesMinVal(){
+		var minVal = document.getElementById("min_attendees").value;
+		document.getElementById("max_attendees").min = minVal;
+		<!-- if (document.getElementById("max_attendees").value < minVal){ -->
+			<!-- document.getElementById("max_attendees").value = minVal; -->
+		<!-- } -->
+	}
+</script>
+				
+{% endblock content %}

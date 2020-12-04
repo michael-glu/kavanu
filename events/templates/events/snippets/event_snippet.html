@@ -1,0 +1,78 @@
+<style type="text/css">
+	.card{
+		max-width: 700px;
+		width: 100%;
+	}
+	.card-body{
+		padding: 20px;
+	}
+</style>
+
+
+
+{% if event %}
+<div class="container">
+	<div class="row">
+
+		<!-- Event -->
+		<!-- <div class="card m-auto" style="width: 18rem;"> -->
+			<!-- <a href="{% url 'events:detail' event.pk %}"> -->
+				<!-- <img class="card-img-top" src="{{event.image.url}}"> -->
+			<!-- </a>		 -->
+			<!-- <div class="card-body mt-2 mb-2"> -->
+				<!-- <a href="{% url 'events:detail' event.pk %}"> -->
+					<!-- <h2 class="card-title">{{event.title}}</h2> -->
+				<!-- </a> -->
+				<!-- <p class="card-text">{{event.location}}</p> -->
+				<!-- <p class="card-text">{{event.datetime}}</p> -->
+				<!-- <p class="card-text">{{event.description|safe|truncatechars:180}}</p> -->
+				<!-- <a href="{% url 'events:detail' event.pk %}" class="btn btn-primary">Details</a> -->
+				<!-- {% if event.host == request.user %} -->
+					<!-- <a href="{% url 'events:edit' event.pk %}" class="btn btn-primary">Update</a> -->
+				<!-- {% endif %} -->
+			<!-- </div> -->
+			
+			<!-- <div class="card-footer text-muted"> -->
+			  <!-- Hosted by {{event.host}} -->
+			<!-- </div> -->
+		<!-- </div> -->
+		
+		<div class="card m-auto flex-row flex-wrap">
+			<a href="{% url 'events:detail' event.pk %}">
+				<img class="card-header border-0" style="width: 18rem;" src="{{event.image.url}}">
+			</a>		
+			<div class="card-block mt-2 mb-2 px-3">
+				<a href="{% url 'events:detail' event.pk %}">
+					<h4 class="card-title">{{event.title}}</h4>
+				</a>
+				<p class="card-text"><strong>Where? </strong>{{event.location}}</p>
+				<p class="card-text"><strong>When? </strong>{{event.datetime}}</p>
+				<p class="card-text">{{event.description|safe|truncatechars:180}}</p>
+				<a href="{% url 'events:detail' event.pk %}" class="btn btn-primary">Details</a>
+				{% if event.host == request.user %}
+					<a href="{% url 'events:edit' event.pk %}" class="btn btn-outline-primary">Edit</a>
+					{% include 'events/snippets/delete_modal.html' with event=event %}
+					<button class="btn btn-outline-primary" onclick="document.getElementById('{{event.pk}}').style.display='block'">Delete</button>
+				{% endif %}
+			</div>
+			<div class="w-100"></div>
+			<div class="card-footer w-100 text-muted">
+			  Hosted by {{event.host}}
+			</div>
+		</div>
+	</div>
+</div>
+{% else %}
+<div class="container">
+	<div class="row">
+		<div class="card m-auto">
+			<div class="card-body mt-2 mb-2">
+				<h2 class="card-title">
+					No results
+				</h2>
+				<p class="card-text"> There were no results matching your search: "{{query}}".</p>
+			</div>
+		</div>
+	</div>
+</div>
+{% endif %}

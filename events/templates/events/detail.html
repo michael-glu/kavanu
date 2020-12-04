@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style type="text/css">
+	
+	.card{
+		max-width: 700px;
+	}
+	
+	.container{
+		padding: 20px;
+	}
+</style>
+
+<div class="container">
+	<div class="row"> 
+		
+		<!-- Event Detail -->
+		<div class="card m-auto">
+			<img class="card-img-top" src="{{event.image.url}}">
+			<div class="card-body my-2">
+				<h2 class="card-title">{{ event.title }}</h2>
+				<p class="card-text"><strong>Location: </strong>{{ event.location }}</p>
+				<p class="card-text"><strong>Date: </strong>{{ event.datetime }}<p>
+				<p class="card-text">{{ event.description }}</p>
+				<p><strong>Players:</strong> (max {{ event.max_attendees }} players)</p>
+				<ul>
+					{% for account in event.account_set.all %}
+						<li>{{ account.username }}</li>
+					{% endfor %}
+				</ul>
+				
+				{% if request.user in event.account_set.all %}
+					<p style="color: green;">You are attending this event.
+						<form method="post">{% csrf_token %}
+							<input class="btn btn-primary" type="submit" name="leave" value="Unregister">
+						</form>
+					</p>
+
+				{% else %}
+					<p>
+						<form method="post">{% csrf_token %}
+							<input class="btn btn-primary" type="submit" name="join" value="Join Event">
+						</form>
+					</p>
+				{% endif %}
+				
+				{% if event.host == request.user %}
+					<a href="{% url 'events:edit' event.pk %}" class="btn btn-outline-primary">Edit</a>
+					{% include 'events/snippets/delete_modal.html' with event=event %}
+					<button class="btn btn-outline-primary" onclick="document.getElementById('{{event.pk}}').style.display='block'">Delete</button>
+				{% endif %}
+				
+				{% if already_playing_message %}<p style="color: red;"><strong>{{ already_playing_message }}</strong></p>{% endif %}
+			</div>
+			<div class="card-footer text-muted">
+				Hosted by {{ event.host }}
+			</div>
+		</div>
+		<!-- End Event Details -->
+		
+	</div>
+</div>
+
+
+
+{% endblock content %}

@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style type="text/css">
+
+    .create-form {
+	    width: 100%;
+	    max-width: 100%;
+	    padding: 15px;
+	    margin: auto;
+  	}
+
+  	.submit-button{
+  		max-width: 200px;
+  	}
+
+	.image {
+	  opacity: 1;
+	  transition: .5s ease;
+	  backface-visibility: hidden;
+	}
+
+	.middle {
+	  transition: .5s ease;
+	  opacity: 0;
+	  position: absolute;
+	  text-align: center;
+	  top: 50%;
+	  left: 50%;
+	  transform: translate(-50%, -50%);
+	
+	}
+	.image-group{
+		position: relative;
+  		text-align: center;
+  		cursor:pointer;
+	}
+
+	.image-group:hover .image {
+	  opacity: 0.3;
+	}
+
+	.image-group:hover .middle {
+	  opacity: 1;
+	}
+
+	.text {
+	  margin: auto;
+	  background-color: #4CAF50;
+	  color: white;
+	  font-size: 15px;
+	  padding: 15px;
+	}
+</style>
+
+<div class="container">
+	<div class="row">
+		<div class="col-lg-7 offset-lg-1">
+
+			{% if success_message %}
+				<h3 style="color:green; text-align: center;">{{success_message}}</h3>
+			{% endif %}
+
+			<form class="create-form" method="post" enctype="multipart/form-data">{% csrf_token %}
+			
+				<!-- Title -->
+				<div class="form-group">
+					<label for="title">Title</label>
+					<input class="form-control" type="text" name="title" id="title" placeholder="Title" value="{{form.initial.title}}"required autofocus>
+				</div>
+				
+				<!-- Datetime -->
+				<div class="form-group">
+					<label for="datetime">Date and time</label>
+					<input class="form-control" type="datetime-local" name="datetime" id="datetime" value="{{form.initial.datetime}}" required autofocus>
+				</div>
+				<!-- fix initial datetime -->
+				
+				<!-- Location -->
+				<div class="form-group">
+					<label for="location">Location</label>
+					<input class="form-control" type="text" name="location" id="location" placeholder="Location" value="{{form.initial.location}}" required autofocus>
+				</div>
+
+				<!-- Description -->
+				<div class="form-group">
+					<label for="description">Desctiption</label>
+					<textarea class="form-control" rows="5" type="text" name="description" id="description" placeholder="Add a description about your event">{{form.initial.description}}</textarea>
+				</div>
+
+				<!-- Image -->
+				<div class="form-group image-group" id="image_group">
+					<img class="img-fluid image" src="{{form.initial.image.url}}"id="image_display">
+					<div class="middle">
+					    <div class="text">Change image</div>
+					</div>
+				</div>
+				<input type="file" name="image" id="image_file" accept="image/*" onchange="readURL(this)">
+				
+				<!-- Min_attendees -->
+				<div class="form-group">
+					<label for="min_attendees">Minimum number of attendees</label>
+					<input class="form-control" type="number" name="min_attendees" id="min_attendees" min="1" oninput="changeMaxAttendeesMinVal()" value="{{form.initial.min_attendees}}"required autofocus>
+				</div>
+				
+				<!-- Max_attendees -->
+				<div class="form-group">
+					<label for="max_attendees">Maximum number of attendees</label>
+					<input class="form-control" type="number" name="max_attendees" id="max_attendees" min="1" value="{{form.initial.max_attendees}}"required autofocus>
+				</div>
+				
+				<!-- This function will limit max_attendees value to at least min_attendees value-->
+				<script type="text/javascript">
+					function changeMaxAttendeesMinVal(){
+						var minVal = document.getElementById("min_attendees").value;
+						document.getElementById("max_attendees").min = minVal;
+						if (document.getElementById("max_attendees").value < minVal){
+							document.getElementById("max_attendees").value = minVal;
+						}
+					}
+				</script>
+				
+				{% for field in form %}
+					<p>
+						{% for error in field.errors %}
+							<p style="color: red">{{ error }}</p>
+						{% endfor %}
+					</p>
+				{% endfor %}
+				{% if form.non_field_errors %}
+					<div style="color: red">
+						<p>{{form.non_field_errors}}</p>
+					</div>
+				{% endif %}
+				
+				<!-- Submit btn -->
+				<div class="row">
+					<button class="submit-button col btn btn-lg btn-primary btn-block" type="submit">Update</button>
+
+					<a href="{% url 'account' %}" class="col-xs-6 ml-1 btn btn-lg btn-outline-primary">Cancel</a>
+				</div>
+				
+			</form>	
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	document.getElementById('image_group').onclick = function(event){
+		document.getElementById('image_file').click();
+	};
+
+	function readURL(input){
+		var reader = new FileReader();
+		reader.onload = function (e) {
+			$('#image_display')
+				.attr('src', e.target.result)
+		};
+		reader.readAsDataURL(input.files[0]);
+	}
+</script>
+
+{% endblock content %}
